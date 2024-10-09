@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=4 uid="uid://bi1fsmk68jgvi"]
+
+[ext_resource type="PackedScene" uid="uid://bemfq08b1nvyf" path="res://scenes/player/player.tscn" id="1_eoub8"]
+[ext_resource type="TileSet" uid="uid://b8e140ebcs00n" path="res://sprites/kenney/1bitpack/new_tile_set.tres" id="2_inigx"]
+[ext_resource type="Script" path="res://scripts/ui/grid_inventory_ui.gd" id="4_ib30f"]
+[ext_resource type="Script" path="res://scripts/enemy/enemy_manager.gd" id="4_mrr0v"]
+[ext_resource type="PackedScene" uid="uid://bin01ikmkm2dd" path="res://scenes/ui/grid_inventory_element.tscn" id="5_aav1u"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_lwmld"]
+vertices = PackedVector2Array(1144.01, -784.602, 953.883, 720.617, 55, -9, 55, -103, -1216.57, 593.422, -7, -9, -1137.4, -673.313, -71, -103, -71, -9, -9, -39, -41, -39, -41, -73, 25, -73, 25, -39, -7, -39, -9, -9)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(2, 1, 4, 5), PackedInt32Array(6, 0, 3, 7), PackedInt32Array(4, 6, 7, 8), PackedInt32Array(9, 10, 11, 12), PackedInt32Array(12, 13, 14), PackedInt32Array(9, 12, 14), PackedInt32Array(15, 9, 14, 5), PackedInt32Array(15, 5, 4), PackedInt32Array(15, 4, 8)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-1144, -680, -1224, 600, 960, 728, 1152, -792)])
+source_geometry_mode = 2
+agent_radius = 7.0
+
+[sub_resource type="Theme" id="Theme_vskd4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cklni"]
+
+[node name="Node2D" type="CanvasModulate"]
+texture_filter = 1
+
+[node name="EnemyManager" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("4_mrr0v")
+player = NodePath("../CharacterBody2D")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+visible = false
+position = Vector2(96, 96)
+navigation_polygon = SubResource("NavigationPolygon_lwmld")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." groups=["navigation_polygon_source_geometry_group"]]
+light_mask = 2
+position = Vector2(96, 96)
+tile_map_data = PackedByteArray("AAD8//7/AAAAAA0AAAD8//3/AAAAAA0AAAD8//z/AAAAAA0AAAD8//v/AAAAAA0AAAD8//r/AAAAAA0AAAD9//r/AAAAAA0AAAD+//r/AAAAAA0AAAD///r/AAAAAA0AAAAAAPr/AAAAAA0AAAABAPr/AAAAAA0AAAD9//7/AAAAAA0AAAD+//7/AAAAAA0AAAACAPr/AAAAAA0AAAACAPv/AAAAAA0AAAACAPz/AAAAAA0AAAACAP3/AAAAAA0AAAACAP7/AAAAAA0AAAABAP7/AAAAAA0AAAAAAP7/AAAAAA0AAAD///7/AAAHAAkAAAAKAPf/AAAAAAEAAAAEAAQAAAADAAEAAAD1//3/AAAAAAEAAAD8//H/AAAAAAEAAAAEAAMAAAADAAEAAAAFAAMAAAADAAEAAAAFAAQAAAADAAEAAAAGAAQAAAAAAAEAAAD7//3/AAABAAAAAAD7//z/AAABAAAAAAD7//v/AAABAAAAAAD7//7/AAABAAAAAAD6//3/AAABAAAAAAD8////AAABAAAAAAD5//z/AAABAAAAAAADAAQAAAAAAAEAAAADAAMAAAAAAAEAAAAFAAIAAAAGAAAAAAAGAAMAAAAAAAEAAAAHAAUAAAAFAAAAAAAGAAUAAAAFAAAAAAAFAAUAAAAAAAEAAAAEAAUAAAAGAAAAAAAGAAIAAAAFAAAAAAAEAAIAAAAAAAEAAAADAAUAAAAFAAAAAAADAAIAAAAGAAAAAAD7/wYAAAABAA8AAAD//wEAAAAMAAEAADD//wAAAAAIAAEAADD/////AAAIAAEAAAAXAPr/AQAAAAAAAQAOAPL/AQAAAAAAAQD9/wQAAQAAAAAABQAAAAYAAQAAAAAABQD4/wMAAQAAAAAABQD4/wgAAQAAAAAABQA=")
+tile_set = ExtResource("2_inigx")
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_eoub8")]
+position = Vector2(139, -16)
+safe_margin = 0.1
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+position = Vector2(-8, -8)
+zoom = Vector2(3, 3)
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="CanvasLayer"]
+texture_filter = 1
+offset_left = 34.0
+offset_top = 622.0
+offset_right = 384.0
+offset_bottom = 1033.0
+theme = SubResource("Theme_vskd4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_cklni")
+
+[node name="GridInventoryUI" type="GridContainer" parent="CanvasLayer/Panel" node_paths=PackedStringArray("player_ref")]
+layout_mode = 2
+script = ExtResource("4_ib30f")
+grid_element_size = 40
+grid_element_scene = ExtResource("5_aav1u")
+player_ref = NodePath("../../../CharacterBody2D")
+
+[connection signal="changed" from="TileMapLayer" to="EnemyManager" method="_on_tile_map_layer_changed"]

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "cSW9OSnsDGs=",
+  "success": true,
+  "projectFilePath": "F:\\development\\godot\\Projects\\potio\\Console\\Console.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gwend\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\gwend\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

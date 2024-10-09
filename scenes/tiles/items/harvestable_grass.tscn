@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bns0goticd6co"]
+
+[ext_resource type="Script" path="res://scripts/interactables/harvest.gd" id="1_ymltg"]
+[ext_resource type="Resource" uid="uid://708sfu5acx18" path="res://resources/items/grass.tres" id="2_n7rdk"]
+[ext_resource type="Texture2D" uid="uid://b5gbd5imo2c5u" path="res://sprites/kenney/1bitpack/colored-transparent.png" id="3_ye85t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rgxw2"]
+
+[node name="Harvestable Grass" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_ymltg")
+item = ExtResource("2_n7rdk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_ye85t")
+region_enabled = true
+region_rect = Rect2(17, 34, 16, 16)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_rgxw2")
