@@ -1,4 +1,4 @@
-﻿namespace Console.Collections;
+﻿namespace Gwenvis.DeveloperConsole.Collections;
 
 public class PooledList<T> : List<T>, IDisposable
 {

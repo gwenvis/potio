@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace potio.scripts.developer.console;
+namespace Gwenvis.DeveloperConsole;
 
 internal static class CommandTokenExtensions
 {

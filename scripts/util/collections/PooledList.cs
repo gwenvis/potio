@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace potio.scripts.util.collections;
+namespace Potio.scripts.util.collections;
 
 public class PooledList<T> : List<T>, IDisposable
 {

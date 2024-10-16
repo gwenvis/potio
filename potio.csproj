@@ -6,6 +6,17 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
+    <RootNamespace>Potio</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningsAsErrors>;NU1605;SYSLIB0011;nullable</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'ExportDebug' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'ExportRelease' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="scripts\actors\knockback.gd" />
@@ -27,12 +38,12 @@
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="scripts\developer\console\ui\" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Console\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Console\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Console\Console.csproj" />
   </ItemGroup>
 </Project>

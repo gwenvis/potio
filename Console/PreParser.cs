@@ -1,10 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using ErrorOr;
-using Godot;
-using Range = System.Range;
+﻿using Range = System.Range;
 
-namespace potio.scripts.developer.console;
+namespace Gwenvis.DeveloperConsole;
 
 internal ref struct PreParser
 {

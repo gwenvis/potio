@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace potio.scripts.developer.console;
+namespace Gwenvis.DeveloperConsole;
 
 public record struct Result(bool IsFailure, string? Name, string? Description)
 {

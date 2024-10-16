@@ -74,7 +74,7 @@ internal sealed class Fonts
             string name = $"{System.IO.Path.GetFileName(fp.Font.ResourcePath)}, {fontSize}px";
             for (int i = 0; i < name.Length && i < 40; ++i)
             {
-                fc->Name[i] = Convert.ToByte(name[i]);
+                fc->Name[i] = System.Convert.ToByte(name[i]);
             }
 
             int len = fp.Font.Data.Length;

@@ -1,39 +1,43 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
-using Console.Collections;
+using Gwenvis.DeveloperConsole.Collections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using potio.scripts.developer.console;
 
-namespace Console;
+namespace Gwenvis.DeveloperConsole;
 
 public class Console
 {
-    private static Console _instance = null!;
-    private readonly ILogger _logger;
-    
-    public Console(ILogger? logger = null) 
+    private Console(ILogger? logger = null) 
     {
-        _instance = this;
         _logger = logger ?? NullLogger.Instance;
     }
     
     internal delegate void RunSetCommand(CommandToken commandToken);
-    
-    private static readonly Dictionary<string, ConsoleCommand> _commands = new();
-    private static readonly Tokenizer _tokenizer = new();
 
-    private static Stopwatch? _stopwatch = null;
+    public static Console? SingletonInstance { get; private set; }
+
+    public ConsoleMessages Messages { get; } = new ();
     
-    public static bool IsDebug { get; set; }
+    private readonly ILogger _logger;
     
+    private readonly Dictionary<string, ConsoleCommand> _commands = new();
+    private readonly Tokenizer _tokenizer = new();
+
+    private Stopwatch? _stopwatch = null;
+    
+    public bool IsDebug { get; set; }
     
     public static void RegisterCommand(string command, Delegate method)
     {
-        Debug.Assert(_instance != null, "Console instance is null. One should have been created before using this...");
-        
+        EnsureConsoleCreated();
+        Debug.Assert(SingletonInstance != null, "Console instance is null. One should have been created before using this...");
+        SingletonInstance._RegisterCommand(command, method);
+    }
+
+    private void _RegisterCommand(string command, Delegate method)
+    {
         var info = method.Method;
 
         if (!info.IsStatic || info.IsGenericMethod || _commands.ContainsKey(command))
@@ -42,10 +46,10 @@ public class Console
         }
 
         if (IsDebug) 
-            _instance.StartStopwatch();
+            StartStopwatch();
         var call = BuildStaticCallExpression(info);
         if (IsDebug) 
-            _instance.StopAndPrintStopwatch("Building command took ");
+            StopAndPrintStopwatch("Building command took ");
         var consoleCommand = new ConsoleCommand(command, method, info.GetParameters().Length, call);
         _commands.Add(command, consoleCommand);
     }
@@ -64,7 +68,7 @@ public class Console
 
         if (!commandToken.HasValue)
         {
-            GD.PrintErr("Tokenizing failed");
+            _logger.LogError("Tokenizing failed");
             return;
         }
 
@@ -72,14 +76,14 @@ public class Console
         
         if (!_commands.TryGetValue(invocationToken.Value, out var command))
         {
-            GD.PrintErr("Command ", invocationToken.Value, " not found.");
+            _logger.LogError("Command {Command} not found", invocationToken.Value);
             return;
         }
 
         var expectedParameters = command.ArgumentCount;
         if (expectedParameters != (commandToken.Value.Parameters?.Length ?? 0))
         {
-            GD.PrintErr("Incorrect number of parameters");
+            _logger.LogError("Incorrect number of parameters. Expected {Expected}, got {Actual}", expectedParameters, commandToken.Value.Parameters?.Length ?? 0);
             return;
         }
 
@@ -90,7 +94,14 @@ public class Console
             StopAndPrintStopwatch("Running command took ");
     }
 
-    public static void Clear() => _commands.Clear();
+    public void Clear() => _commands.Clear();
+
+    public static Console CreateConsole(ILogger? logger = default)
+    {
+        Debug.Assert(SingletonInstance == null, "Console instance already exists!");
+        SingletonInstance = new Console(logger);
+        return SingletonInstance;
+    }
     
     private static RunSetCommand BuildStaticCallExpression(
         MethodInfo methodInfo)
@@ -104,7 +115,15 @@ public class Console
         return lambdaExpression.Compile();
     }
 
-    private static Dictionary<Type, Delegate> ConvertTokenMethods = new()
+    private static void EnsureConsoleCreated()
+    {
+        if (SingletonInstance == null!)
+        {
+            SingletonInstance = new Console();
+        }
+    }
+
+    private static readonly Dictionary<Type, Delegate> _convertTokenMethods = new()
     {
         { typeof(int), GetInteger },
         { typeof(double), GetDouble },
@@ -127,7 +146,7 @@ public class Console
             var indexExpr = Expression.Constant(i, typeof(int));
             var type = param.ParameterType;
 
-            if (!ConvertTokenMethods.TryGetValue(type, out var convertDelegate))
+            if (!_convertTokenMethods.TryGetValue(type, out var convertDelegate))
             {
                 throw new NotSupportedException($"{type.Name} is not supported :(");
             }
@@ -184,8 +203,7 @@ public class Console
     private void StopAndPrintStopwatch(string action = "")
     {
         _stopwatch?.Stop();
-        
-        GD.Print(action, _stopwatch.Elapsed.TotalNanoseconds, " nanoseconds");
+        _logger.LogInformation(action, _stopwatch.Elapsed.TotalNanoseconds, " nanoseconds");
     }
 }
 

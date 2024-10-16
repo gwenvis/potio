@@ -3,8 +3,9 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Console;
 
-namespace potio.scripts.developer.console;
+namespace Gwenvis.DeveloperConsole;
 
 internal class Tokenizer
 {
