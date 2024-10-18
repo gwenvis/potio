@@ -17,7 +17,7 @@ public class GodotLogger : ILogger
         }
 
         var formatted = formatter(state, exception);
-        Console.SingletonInstance?.Messages.AddMessage(formatted, logLevel);
+        Console.SingletonInstance?.Message.AddMessage(formatted, logLevel);
         switch (logLevel)
         {
             case LogLevel.Trace:

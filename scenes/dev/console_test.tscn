@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d1204iclotj5d"]
 
-[ext_resource type="Script" path="res://scripts/developer/console/ConsoleTest.cs" id="1_bk42l"]
+[ext_resource type="Script" path="res://scripts/developer/console/ui/ImGuiConsole.cs" id="1_g36g1"]
 
 [node name="ConsoleTest" type="Node"]
-script = ExtResource("1_bk42l")
+script = ExtResource("1_g36g1")

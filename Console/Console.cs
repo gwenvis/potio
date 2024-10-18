@@ -18,7 +18,7 @@ public class Console
 
     public static Console? SingletonInstance { get; private set; }
 
-    public ConsoleMessages Messages { get; } = new ();
+    public ConsoleMessages Message { get; } = new ();
     
     private readonly ILogger _logger;
     
@@ -208,3 +208,5 @@ public class Console
 }
 
 internal record ConsoleCommand(string Command, Delegate Method, int ArgumentCount, Console.RunSetCommand runCommand);
+
+internal record struct Suggestion(string Command)

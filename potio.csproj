@@ -34,7 +34,6 @@
     <Content Include="scripts\ui\grid_inventory_ui.gd" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ErrorOr" Version="2.0.1" />
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
   </ItemGroup>
   <ItemGroup>

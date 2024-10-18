@@ -4,7 +4,7 @@ namespace Gwenvis.DeveloperConsole;
 
 internal ref struct PreParser
 {
-    private const string AllNormalCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ0123456789!@#$%^&*+-.,/:;";
+    private const string AllNormalCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*+-.,/:;";
     
     public PreParser(
         ReadOnlySpan<char> source, 
