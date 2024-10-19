@@ -58,11 +58,9 @@ region_enabled = true
 region_rect = Rect2(459, 17, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 shape = SubResource("RectangleShape2D_4ylv6")
 
 [node name="Attack" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("2_uqxap")
 region_enabled = true
 region_rect = Rect2(425, 187, 16, 16)

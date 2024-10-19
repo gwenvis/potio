@@ -209,4 +209,4 @@ public class Console
 
 internal record ConsoleCommand(string Command, Delegate Method, int ArgumentCount, Console.RunSetCommand runCommand);
 
-internal record struct Suggestion(string Command)
+internal record struct Suggestion(string Command);

@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 using Godot;
 using ImGuiNET;
 using Microsoft.Extensions.Logging;
@@ -12,30 +16,78 @@ public partial class ImGuiConsole : Node
     private static ILogger _logger = new GodotLogger();
 
     private string _commandInput = string.Empty;
+    private string? _applyCommandInput = null;
     private bool _isAtBottom = true;
+    private bool _isOpen = false;
 
-    public override void _Ready()
+    private readonly List<string> _commandHistory = new();
+    private int _currentHistoryIndex = -1;
+
+    public override void _Input(InputEvent inputEvent)
     {
-        base._Ready();
-        Console.RegisterCommand("debug", PrintDebug);
-        Console.RegisterCommand("trace", PrintTrace);
-        Console.RegisterCommand("information", PrintInformation);
-        Console.RegisterCommand("warning", PrintWarning);
-        Console.RegisterCommand("error", PrintError);
-        Console.RegisterCommand("critical", PrintCritical);
+        if ((inputEvent is InputEventKey eventKey && HandleInputEventKey(eventKey)))
+        {
+            GetViewport().SetInputAsHandled();
+        }
+    }
 
+    private bool HandleInputEventKey(InputEventKey eventKey)
+    {
+        if (eventKey is { Keycode: Key.F1, Pressed: true, Echo: false })
+        {
+            _isOpen = !_isOpen;
+            return true;
+        }
+
+        return false;
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
-        
-        if (!ImGui.Begin("Console"))
+
+        if (!_isOpen)
+        {
+            return;
+        }
+
+        if (!ImGui.Begin("Console", ref _isOpen))
         {
             ImGui.End();
             return;
         }
 
+        DrawLog();
+        DrawCommandLine(); 
+        ImGui.End();
+    }
+
+    private unsafe void DrawCommandLine()
+    {
+        const ImGuiInputTextFlags inputTextFlags = ImGuiInputTextFlags.EnterReturnsTrue
+                                                   | ImGuiInputTextFlags.CallbackHistory
+                                                   | ImGuiInputTextFlags.CallbackCompletion;
+
+        if (_applyCommandInput != null)
+        {
+            _commandInput = _applyCommandInput;
+            _applyCommandInput = null;
+        }
+        
+        unsafe
+        {
+            var submit = ImGui.InputText("command", ref _commandInput, 1024, inputTextFlags, OnInputCallback);
+            if (submit)
+            {
+                SubmitCommandLine(_commandInput);
+                _commandInput = string.Empty;
+                ImGui.SetKeyboardFocusHere(-1);
+            }
+        }
+    }
+
+    private void DrawLog()
+    {
         var height = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().ItemSpacing.Y;
         if (ImGui.BeginChild("##Log", new System.Numerics.Vector2(0, -height), ImGuiChildFlags.None))
         {
@@ -55,29 +107,63 @@ public partial class ImGuiConsole : Node
             
             ImGui.EndChild();
         }
+    }
 
-
-        const ImGuiInputTextFlags inputTextFlags = ImGuiInputTextFlags.EnterReturnsTrue
-                                                   | ImGuiInputTextFlags.CallbackHistory
-                                                   | ImGuiInputTextFlags.CallbackCompletion;
-        unsafe
-        {
-            var submit = ImGui.InputText("command", ref _commandInput, 1024, inputTextFlags, OnInputCallback);
-            if (submit)
-            {
-                _console.Run(_commandInput);
-                _commandInput = string.Empty;
-                ImGui.SetKeyboardFocusHere(-1);
-            }
-        }
-
-        ImGui.End();
+    private void SubmitCommandLine(string input)
+    {
+        _console.Run(input);
+        _commandHistory.Add(input);
     }
 
     private unsafe int OnInputCallback(ImGuiInputTextCallbackData* data)
     {
-        _logger.LogTrace("{Event}", data->EventFlag);
-        return 0;
+        switch (data->EventFlag)
+        {
+            case ImGuiInputTextFlags.CallbackHistory:
+                if (_commandHistory.Count == 0)
+                {
+                    return 1;
+                }
+                
+                var up = data->EventKey == ImGuiKey.UpArrow;
+                var first = _currentHistoryIndex == -1;
+                if (up)
+                {
+                    _currentHistoryIndex = int.Max((first ? _commandHistory.Count : _currentHistoryIndex) - 1, 0);
+                    SetInputBuffer(_commandHistory[_currentHistoryIndex]);
+                    return 1;
+                }
+
+                if (_currentHistoryIndex == -1)
+                {
+                    SetInputBuffer(string.Empty);
+                    return 1;
+                }
+                
+                _currentHistoryIndex += 1;
+                if (_currentHistoryIndex >= _commandHistory.Count)
+                {
+                    _currentHistoryIndex = -1;
+                    SetInputBuffer(string.Empty);
+                    return 1;
+                }
+                
+                SetInputBuffer(_commandHistory[_currentHistoryIndex]);
+
+                void SetInputBuffer(string input)
+                {
+                    fixed (char* inputPtr = input)
+                        Encoding.UTF8.GetBytes(inputPtr, input.Length, data->Buf, input.Length);
+                    data->BufSize = input.Length;
+                    data->BufTextLen = input.Length;
+                    data->BufDirty = 1;
+                    data->CursorPos = input.Length;
+                }
+                return 1;
+            case ImGuiInputTextFlags.CallbackCompletion:
+                return 1;
+            default: return 1;
+        }
     }
 
     private static System.Numerics.Vector4 GetColor(LogLevel logLevel)

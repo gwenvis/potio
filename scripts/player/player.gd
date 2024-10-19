@@ -1,12 +1,16 @@
 class_name Player
 extends CharacterBody2D
 
-@export var player_movement: PlayerMovement = PlayerMovement.new()
+@export var player_movement: PlayerMovement
 @export var player_attack: PlayerAttack
 @export var knockback: Knockback
 @export var inventory: PlayerInventory
 
 var _input_direction: Vector2
+
+func _ready() -> void:
+	if not player_movement:
+		player_movement = PlayerMovement.new()
 
 func _physics_process(delta: float) -> void:
 	if(knockback and knockback.should_process()): 

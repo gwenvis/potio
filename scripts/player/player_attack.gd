@@ -10,6 +10,7 @@ var current_visible_time: float
 var is_frozen: bool
 
 func _physics_process(delta: float) -> void:
+	if not attack_sprite: return
 	attack_sprite.visible = current_visible_time > 0
 	if current_visible_time > 0:
 		current_visible_time = max(0, current_visible_time - delta)
