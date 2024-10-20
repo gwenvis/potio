@@ -40,11 +40,15 @@ public class Movement(CharacterBody2D body)
     }
 }
 
-public partial class Player : CharacterBody2D, IHurtable
+public partial class Player : CharacterBody2D, IBasicHealth
 {
     private PlayerInput _playerInput = null!;
     private Movement _movement = null!;
-
+    
+    // --- HEALTH ---
+    private const double StartingHealth = 20;
+    public BasicHealth Health { get; private set; } = null!;
+    
     // --- ATTACK ---
     private const int AttackSpriteOffset = 24;
     private const float AttackActiveTime = 0.15f;
@@ -62,16 +66,22 @@ public partial class Player : CharacterBody2D, IHurtable
     {
         Debug.Assert(_attackSprite != null);
         Debug.Assert(_attackArea != null);
-        _playerInput = new PlayerInput();
-        _movement = new Movement(this);
-        AddChild(_playerInput);
         MotionMode = MotionModeEnum.Floating;
+        CollisionLayer = PhysicsLayers.Player;
+        
+        _movement = new Movement(this);
+        Health = new BasicHealth(StartingHealth);
+        _playerInput = new PlayerInput();
+        AddChild(_playerInput);
     }
 
     public override void _Ready()
     {
         _playerInput.MousePressed += OnMousePressed;
         _attackSprite.Visible = false;
+
+        Health.Damaged += OnHealthDamaged;
+        Health.Depleted += OnHealthDepleted;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -80,17 +90,12 @@ public partial class Player : CharacterBody2D, IHurtable
         ProcessAttack((float)delta);
         MoveAndSlide();
     }
-
-    public void Hurt(Node2D who, double amount)
-    {
-        GlobalLogger.Info($"Ouch, {who.Name} for {amount}");
-    }
-
+        
     private void ProcessAttack(float delta)
     {
         if (DecrementTimer(ref _attackCooldownTimer, delta))
         {
-            _recentlyAttacked.Remove(_playerInput);
+            _recentlyAttacked.Clear();
             GlobalLogger.Info("Clered list");
         }
 
@@ -105,19 +110,24 @@ public partial class Player : CharacterBody2D, IHurtable
             _attackSprite.Visible = false;
         }
     }
-
+    
     private void DamageAllInAttackArea()
     {
         var bodies = _attackArea.GetOverlappingBodies();
         foreach (var body in bodies)
         {
-            if (!_recentlyAttacked.Contains(body) 
-                && body is IHurtable hurtable)
+            GlobalLogger.Info(body.GetTree().GetRoot().Name);
+            var root = body.GetOwner();
+            if (!_recentlyAttacked.Contains(root) 
+                && root is IHurtable hurtable)
             {
                 hurtable.Hurt(this, 1);
             }
 
-            _recentlyAttacked.Add(body);
+            if (!_recentlyAttacked.Contains(root))
+                GlobalLogger.Info(root.Name);
+
+            _recentlyAttacked.Add(root);
         }
     }
 
@@ -156,5 +166,15 @@ public partial class Player : CharacterBody2D, IHurtable
         }
         timer -= delta;
         return timer < Mathf.Epsilon;
+    }
+
+    private void OnHealthDamaged(Node2D who, double amount)
+    {
+        GlobalLogger.Info($"Youch! {who.Name} {amount} left: {Health.CurrentHealth}");
+    }
+
+    private void OnHealthDepleted(Node2D who)
+    {
+        GlobalLogger.Info($"I deaded! {who.Name}");
     }
 }

@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=4 format=3 uid="uid://yr1s8xyco4nr"]
+[gd_resource type="TileSet" load_steps=6 format=3 uid="uid://yr1s8xyco4nr"]
 
 [ext_resource type="Texture2D" uid="uid://bx34x1obhpov2" path="res://sprites/iso/Grassland Tileset/Grassland Tileset.png" id="1_dg4w8"]
+[ext_resource type="PackedScene" uid="uid://bqu2f2077vrwl" path="res://scenes/tiles/Tree.tscn" id="2_l4qf3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sahep"]
 texture = ExtResource("1_dg4w8")
@@ -72,6 +73,7 @@ texture_region_size = Vector2i(32, 32)
 0:36/size_in_atlas = Vector2i(4, 6)
 0:36/0 = 0
 0:36/0/texture_origin = Vector2i(0, 64)
+0:36/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8.5871, 15.0712, -9.50461, -11.2477, 10.8162, -10.5919, 11.1766, 15.523)
 4:36/size_in_atlas = Vector2i(4, 6)
 4:36/0 = 0
 4:36/0/texture_origin = Vector2i(0, 64)
@@ -395,8 +397,6 @@ texture_region_size = Vector2i(32, 32)
 12:22/0 = 0
 14:22/size_in_atlas = Vector2i(2, 5)
 14:22/0 = 0
-16:23/size_in_atlas = Vector2i(8, 6)
-16:23/0 = 0
 24:22/size_in_atlas = Vector2i(8, 4)
 24:22/0 = 0
 0:31/size_in_atlas = Vector2i(4, 4)
@@ -407,6 +407,12 @@ texture_region_size = Vector2i(32, 32)
 12:31/0 = 0
 4:31/size_in_atlas = Vector2i(4, 4)
 4:31/0 = 0
+16:22/size_in_atlas = Vector2i(8, 8)
+16:22/0 = 0
+16:22/0/y_sort_origin = 32
+16:22/0/physics_layer_0/polygon_0/points = PackedVector2Array(-26.4623, 49.5949, 0.175247, 63.2641, 30.493, 47.3167, 0, 32.5959)
+16:22/0/physics_layer_0/polygon_1/points = PackedVector2Array(-53.8008, 90.0769, -27.3385, 69.3978, 46.6157, 62.3879, 65.5423, 24.8851, 92.7056, 4.38117, 104.798, 25.9365, 90.7779, 73.2532, 37.5028, 94.2828, -53.4503, 91.4789)
+16:22/0/physics_layer_0/polygon_2/points = PackedVector2Array(-79.4779, 81.0302, -99.0369, 63.0235, -112.387, 63.9549, -113.939, 45.6377, -102.142, 42.8436, -89.1, 10.45, -11.55, -30.25, 14.3, -29.15, 32.9088, -22.6636, 43.4645, -22.0427, 45.6377, -9.62428, 56.8143, -5.27783, 51.8469, 9.93474, 6.83014, 0.620918, -27.5113, 2.24434, -61.1607, 19.8695)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gtalr"]
 resource_name = "Ground"
@@ -445,6 +451,10 @@ texture_region_size = Vector2i(64, 32)
 15:1/0 = 0
 0:1/0 = 0
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_rale1"]
+resource_name = "Trees"
+scenes/1/scene = ExtResource("2_l4qf3")
+
 [resource]
 tile_shape = 1
 tile_offset_axis = 1
@@ -452,3 +462,4 @@ tile_size = Vector2i(64, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_sahep")
 sources/1 = SubResource("TileSetAtlasSource_gtalr")
+sources/2 = SubResource("TileSetScenesCollectionSource_rale1")

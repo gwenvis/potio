@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqu2f2077vrwl"]
+
+[ext_resource type="Script" path="res://scripts/items/Tree.cs" id="1_n86l1"]
+[ext_resource type="PackedScene" uid="uid://df2ex2jylmtas" path="res://scenes/tiles/items/wood.tscn" id="2_1ncvo"]
+[ext_resource type="Texture2D" uid="uid://bx34x1obhpov2" path="res://sprites/iso/Grassland Tileset/Grassland Tileset.png" id="2_7xnv4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qdj2j"]
+
+[node name="Tree" type="Node2D"]
+y_sort_enabled = true
+texture_filter = 1
+script = ExtResource("1_n86l1")
+_dropOnDestroy = ExtResource("2_1ncvo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_7xnv4")
+offset = Vector2(1.4, -75.8)
+region_enabled = true
+region_rect = Rect2(0, 1152, 128, 192)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_qdj2j")

@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 Console="*res://scenes/dev/imguiConsole.tscn"
 RememberWindowSize="*res://scripts/util/game/RememberWindowSize.cs"
+DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
 
 [debug]
 
@@ -45,13 +46,14 @@ project/assembly_name="potio"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg", "res://addons/script-ide/plugin.cfg")
+enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/script-ide/plugin.cfg")
 
 [physics]
 
-common/physics_ticks_per_second=120
+common/physics_jitter_fix=1.0
 common/physics_interpolation=true
 
 [rendering]
 
 renderer/rendering_method="mobile"
+anti_aliasing/quality/msaa_2d=1

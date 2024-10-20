@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://df2ex2jylmtas"]
+
+[ext_resource type="Texture2D" uid="uid://bx34x1obhpov2" path="res://sprites/iso/Grassland Tileset/Grassland Tileset.png" id="1_q5on0"]
+
+[node name="Wood" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_q5on0")
+offset = Vector2(0, -16)
+region_enabled = true
+region_rect = Rect2(256, 256, 64, 64)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-20, 0, 0, 10, 21, -1, 18, -6, -17, -6)

@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://e5m588ytr82p"]
+
+[ext_resource type="Script" path="res://scripts/player/Player.cs" id="1_hik7e"]
+[ext_resource type="Texture2D" uid="uid://b5gbd5imo2c5u" path="res://sprites/kenney/1bitpack/colored-transparent.png" id="2_avjm1"]
+[ext_resource type="Texture2D" uid="uid://4wdfjxfah1ac" path="res://sprites/iso/(DEMO) Lords Of Pain - Old School Isometric Assets/playable character/warrior/warrior_armed_idle/S/warrior_armed_idle_S_270.0_0.png" id="3_bryov"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ula2"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7w1eo"]
+radius = 18.0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_attackSprite", "_attackArea")]
+y_sort_enabled = true
+motion_mode = 1
+script = ExtResource("1_hik7e")
+_attackSprite = NodePath("Attack")
+_attackArea = NodePath("Attack/Area2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_0ula2")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+physics_interpolation_mode = 2
+drag_left_margin = 0.15
+drag_top_margin = 0.15
+drag_right_margin = 0.15
+drag_bottom_margin = 0.15
+
+[node name="Attack" type="Sprite2D" parent="."]
+scale = Vector2(1.64038, 1.64038)
+texture = ExtResource("2_avjm1")
+region_enabled = true
+region_rect = Rect2(425, 187, 16, 16)
+
+[node name="Area2D" type="Area2D" parent="Attack"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack/Area2D"]
+shape = SubResource("CircleShape2D_7w1eo")
+
+[node name="WarriorArmedIdleS270_00" type="Sprite2D" parent="."]
+physics_interpolation_mode = 1
+y_sort_enabled = true
+texture = ExtResource("3_bryov")
